@@ -91,6 +91,48 @@ The output feeds directly into `/prd-to-issues`.
 
 ---
 
+### `/create-skill` — Skill Authoring from Scratch
+
+> Guides Claude through designing and writing a new skill from scratch. All skill design knowledge is embedded — no web access needed.
+
+**Activates on:** `/create-skill [name]`, or "make a new skill", "帮我创建skill", "设计一个技能".
+
+**What it does:**
+1. Interviews you to capture purpose, triggers, core logic, and hard limits (max two rounds)
+2. Classifies the skill as Behavior (changes how Claude responds) or Workflow (multi-step with artifacts)
+3. Runs a 7-item quality checklist silently before showing a preview
+4. Resolves the correct `~/.claude/skills/` path automatically — works even without web access
+5. Writes the file only after you confirm
+
+**Best for:** Building a new skill when you have an idea but haven't done the work yet.
+
+---
+
+### `/distill-skill` — Skill Extraction from Completed Work
+
+> Extracts a reusable skill from a workflow you just completed — scripts written, steps taken, corrections made. Produces a self-contained skill bundle including the SKILL.md and any associated scripts.
+
+**Activates on:** `/distill-skill [name]`, or "turn this into a skill", "把我们刚做的存成技能", "提炼成技能".
+
+**What it does:**
+1. Scans the current conversation to identify completed workflows, scripts written, and user corrections
+2. Shows an extraction summary (skill name, steps, NEVER rules, artifacts to archive) for lightweight confirmation
+3. Drafts a full SKILL.md generalized from real session content — extracts *rules*, not *instances*
+4. Archives scripts into `scripts/` and sample outputs into `examples/` under the skill directory
+5. Resolves `~/.claude/skills/` path automatically; writes only after full SKILL.md preview is confirmed
+
+**Skill bundle structure:**
+```
+~/.claude/skills/[name]/
+├── SKILL.md
+├── scripts/   ← scripts from the session
+└── examples/  ← sample outputs for reference
+```
+
+**Best for:** After completing a multi-step task — lock in the workflow so you never have to rediscover it.
+
+---
+
 ## Installation
 
 ### Install all skills
@@ -106,6 +148,8 @@ cp -r ClaudeSkills/prd-to-issues ~/.claude/skills/
 cp -r ClaudeSkills/progressive-disclosure ~/.claude/skills/
 cp -r ClaudeSkills/write-a-prd ~/.claude/skills/
 cp -r ClaudeSkills/yt-search ~/.claude/skills/
+cp -r ClaudeSkills/create-skill ~/.claude/skills/
+cp -r ClaudeSkills/distill-skill ~/.claude/skills/
 ```
 
 ### Install a single skill
@@ -117,7 +161,7 @@ cp -r ClaudeSkills/<skill-name> ~/.claude/skills/
 ### Windows (PowerShell)
 
 ```powershell
-$skills = @("grill-me", "notebooklm", "prd-to-issues", "progressive-disclosure", "write-a-prd", "yt-search")
+$skills = @("grill-me", "notebooklm", "prd-to-issues", "progressive-disclosure", "write-a-prd", "yt-search", "create-skill", "distill-skill")
 foreach ($s in $skills) {
     Copy-Item -Recurse "ClaudeSkills\$s" "$env:USERPROFILE\.claude\skills\"
 }
@@ -128,12 +172,19 @@ foreach ($s in $skills) {
 ## Skill Relationships
 
 ```
+                    ┌─────────────────────────────────────┐
+                    │         Skill Authoring              │
+                    │  /create-skill   /distill-skill      │
+                    │  (from idea)     (from session work) │
+                    └──────────────┬──────────────────────-┘
+                                   │ produces
+                                   ▼
 /grill-me  →  /write-a-prd  →  /prd-to-issues
                                      ↓
                               GitHub Issues
 
-/pd  (can be used alongside any skill for concise output)
-/yt-search  (standalone research tool)
+/pd          (use alongside any skill for concise output)
+/yt-search   (standalone research tool)
 /notebooklm  (standalone knowledge management tool)
 ```
 
@@ -141,6 +192,7 @@ foreach ($s in $skills) {
 1. `/grill-me` — stress-test your idea before writing specs
 2. `/write-a-prd` — produce a structured requirements document
 3. `/prd-to-issues` — decompose into GitHub Epics and Tasks
+4. `/create-skill` or `/distill-skill` — capture new workflows as reusable skills
 
 ---
 
@@ -154,6 +206,8 @@ foreach ($s in $skills) {
 | progressive-disclosure | None |
 | write-a-prd | None (GitHub MCP optional for `--github` flag) |
 | yt-search | `pip install yt-dlp` |
+| create-skill | None (all knowledge embedded) |
+| distill-skill | None (all knowledge embedded) |
 
 ---
 
