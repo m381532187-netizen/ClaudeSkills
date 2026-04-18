@@ -39,7 +39,7 @@ After reading the brief, check each gap category. Only ask about categories with
 
 ### Interview Rules
 
-- Ask all gap questions in a single numbered list
+- **Always use the `AskUserQuestion` tool to ask gap questions** — do not ask via plain text. One `AskUserQuestion` call per interview round, batching all questions for that round.
 - Never ask more than 5 questions in one round
 - Never ask a question already answered in the brief
 - Maximum two interview rounds before drafting
@@ -71,6 +71,7 @@ If invoked with `--github`: also create a GitHub Issue via `mcp__github__issue_w
 
 ## Anti-Patterns (NEVER)
 
+- Never ask gap questions via plain text — always use `AskUserQuestion`
 - Never write the PRD before asking gap questions
 - Never include file paths, class names, or function signatures in the PRD body
 - Never leave Out of Scope empty or thin
